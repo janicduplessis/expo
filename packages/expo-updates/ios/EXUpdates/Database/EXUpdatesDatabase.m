@@ -84,13 +84,14 @@ static NSString * const EXUpdatesDatabaseStaticBuildDataKey = @"staticBuildData"
     NSAssert(asset.filename, @"asset filename should be nonnull");
     NSAssert(asset.contentHash, @"asset contentHash should be nonnull");
 
-    NSString * const assetInsertSql = @"INSERT OR REPLACE INTO \"assets\" (\"key\", \"url\", \"headers\", \"type\", \"metadata\", \"download_time\", \"relative_path\", \"hash\", \"hash_type\", \"marked_for_deletion\")\
-    VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, 0);";
+    NSString * const assetInsertSql = @"INSERT OR REPLACE INTO \"assets\" (\"key\", \"url\", \"headers\", \"extra_request_headers\", \"type\", \"metadata\", \"download_time\", \"relative_path\", \"hash\", \"hash_type\", \"marked_for_deletion\")\
+    VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, 0);";
     if ([self _executeSql:assetInsertSql
                  withArgs:@[
                           asset.key ?: [NSNull null],
                           asset.url ? asset.url.absoluteString : [NSNull null],
                           asset.headers ?: [NSNull null],
+                          asset.extraRequestHeaders ?: [NSNull null],
                           asset.type,
                           asset.metadata ?: [NSNull null],
                           asset.downloadTime,
@@ -164,11 +165,12 @@ static NSString * const EXUpdatesDatabaseStaticBuildDataKey = @"staticBuildData"
   NSAssert(asset.filename, @"asset filename should be nonnull");
   NSAssert(asset.contentHash, @"asset contentHash should be nonnull");
 
-  NSString * const assetUpdateSql = @"UPDATE \"assets\" SET \"headers\" = ?2, \"type\" = ?3, \"metadata\" = ?4, \"download_time\" = ?5, \"relative_path\" = ?6, \"hash\" = ?7, \"url\" = ?8 WHERE \"key\" = ?1;";
+  NSString * const assetUpdateSql = @"UPDATE \"assets\" SET \"headers\" = ?2, \"extra_request_headers\" = ?2, \"type\" = ?3, \"metadata\" = ?4, \"download_time\" = ?5, \"relative_path\" = ?6, \"hash\" = ?7, \"url\" = ?8 WHERE \"key\" = ?1;";
   [self _executeSql:assetUpdateSql
            withArgs:@[
                       asset.key ?: [NSNull null],
                       asset.headers ?: [NSNull null],
+                      asset.extraRequestHeaders ?: [NSNull null],
                       asset.type,
                       asset.metadata ?: [NSNull null],
                       asset.downloadTime,
@@ -182,10 +184,21 @@ static NSString * const EXUpdatesDatabaseStaticBuildDataKey = @"staticBuildData"
 - (void)mergeAsset:(EXUpdatesAsset *)asset withExistingEntry:(EXUpdatesAsset *)existingAsset error:(NSError ** _Nullable)error
 {
   // if the existing entry came from an embedded manifest, it may not have a URL in the database
-  if (asset.url && !existingAsset.url) {
+  BOOL shouldUpdate = false;
+  if ((asset.url && !existingAsset.url) || ![asset.url isEqual:existingAsset.url]) {
     existingAsset.url = asset.url;
+    shouldUpdate = true;
+  }
+  
+  if ((asset.extraRequestHeaders && !existingAsset.extraRequestHeaders) || ![asset.extraRequestHeaders isEqualToDictionary:existingAsset.extraRequestHeaders]) {
+    existingAsset.extraRequestHeaders = asset.extraRequestHeaders;
+    shouldUpdate = true;
+  }
+  
+  if (shouldUpdate) {
     [self updateAsset:existingAsset error:error];
   }
+  
   // all other properties should be overridden by database values
   asset.filename = existingAsset.filename;
   asset.contentHash = existingAsset.contentHash;

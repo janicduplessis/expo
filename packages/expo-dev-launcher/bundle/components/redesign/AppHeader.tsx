@@ -40,7 +40,11 @@ export function AppHeader({ title, subtitle, appImageUri }: AppHeaderProps) {
       <Spacer.Horizontal style={{ height: insets.top }} />
       <Row px="medium" py="small" align="center">
         <Row>
-          <View width="large" height="large" bg="secondary" rounded="medium">
+          <View
+            width="large"
+            height="large"
+            bg={appImageUri ? 'default' : 'secondary'}
+            rounded="medium">
             {Boolean(appImageUri) && (
               <Image size="large" rounded="medium" source={{ uri: appImageUri }} />
             )}

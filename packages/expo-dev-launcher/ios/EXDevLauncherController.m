@@ -508,10 +508,13 @@ NSString *fakeLauncherBundleUrl = @"embedded://EXDevLauncher/dummy";
     [appInfo setObject:appVersion forKey:@"appVersion"];
   }
 
+  NSString *appIconName = [[[[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIcons"] objectForKey:@"CFBundlePrimaryIcon"] objectForKey:@"CFBundleIconFiles"]  lastObject];
+    
+  NSString *resourcePath = [[NSBundle mainBundle] resourcePath];
+  NSString *appIconPath = [[resourcePath stringByAppendingString:appIconName] stringByAppendingString:@".png"];
 
-  NSString *path = [[NSBundle mainBundle] pathForResource:@"AppIcon60x60" ofType:@"png"];
-  if (path) {
-    [appInfo setObject:[@"file://" stringByAppendingString:path] forKey:@"appIcon"];
+  if (appIconPath) {
+    [appInfo setObject:[@"file://" stringByAppendingString:appIconPath] forKey:@"appIcon"];
   }
 
   if (self.manifest) {

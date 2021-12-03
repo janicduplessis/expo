@@ -25,12 +25,15 @@ export function addDeepLinkListener(callback: (string) => void): EventSubscripti
   return EventEmitter.addListener(ON_NEW_DEEP_LINK_EVENT, callback);
 }
 
-export async function clearPendingDeepLink() {
-  // TODO
-}
+export type AppInfo = {
+  appName: string;
+  appVersion: number | null;
+  appIcon: string | null;
+  hostUrl: string | null;
+};
 
-export async function getAppInfoAsync() {
-  return {};
+export async function getAppInfoAsync(): Promise<AppInfo> {
+  return DevLauncher.getAppInfo();
 }
 
 export const clientUrlScheme = DevLauncher.clientUrlScheme;

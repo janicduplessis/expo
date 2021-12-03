@@ -11,8 +11,9 @@ import {
 import * as React from 'react';
 import { TextInput as NativeTextInput, Platform } from 'react-native';
 
-import { validateUrl } from '../../functions/validateUrl';
-import { useDebounce } from '../../hooks/useDebounce';
+// TODO - url validation doesnt seem to work
+// import { validateUrl } from '../../functions/validateUrl';
+// import { useDebounce } from '../../hooks/useDebounce';
 import { clientUrlScheme } from '../../native-modules/DevLauncherInternal';
 
 type UrlDropdownProps = {
@@ -36,7 +37,7 @@ export function UrlDropdown({ onSubmit }: UrlDropdownProps) {
   };
 
   // const isValidUrl = useDebounce(validateUrl(inputValue), 500);
-  const isValidUrl = true
+  const isValidUrl = true;
 
   return (
     <View>

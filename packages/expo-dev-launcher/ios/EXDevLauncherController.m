@@ -87,6 +87,7 @@ NSString *fakeLauncherBundleUrl = @"embedded://EXDevLauncher/dummy";
   
   NSMutableArray *modules = [[DevMenuVendoredModulesUtils vendoredModules] mutableCopy];
   
+  [modules addObject:[DevMenuInternalModule new]];
   [modules addObject:[RCTDevMenu new]];
   [modules addObject:[RCTAsyncLocalStorage new]];
   [modules addObject:[EXDevLauncherLoadingView new]];
@@ -484,6 +485,41 @@ NSString *fakeLauncherBundleUrl = @"embedded://EXDevLauncher/dummy";
     [[RCTKeyCommands sharedInstance] unregisterKeyCommandWithInput:@"d"
                                                      modifierFlags:UIKeyModifierCommand];
   }
+}
+
+-(NSDictionary *)getAppInfo
+{
+  NSMutableDictionary *appInfo = [NSMutableDictionary new];
+
+  [appInfo setObject:self.launcherBridge.bundleURL.absoluteString forKey:@"hostUrl"];
+  [appInfo setObject:[NSNull new] forKey:@"appIcon"];
+  [appInfo setObject:[NSNull new] forKey:@"appName"];
+  [appInfo setObject:[NSNull new] forKey:@"appVersion"];
+
+  NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleDisplayName"] ?: [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleExecutable"];
+
+  if (appName) {
+    [appInfo setObject:appName forKey:@"appName"];
+  }
+
+  NSString *appVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+
+  if (appVersion) {
+    [appInfo setObject:appVersion forKey:@"appVersion"];
+  }
+
+
+  NSString *path = [[NSBundle mainBundle] pathForResource:@"AppIcon60x60" ofType:@"png"];
+  if (path) {
+    [appInfo setObject:[@"file://" stringByAppendingString:path] forKey:@"appIcon"];
+  }
+
+  if (self.manifest) {
+    [appInfo setObject:self.manifest.name forKey:@"appName"];
+    [appInfo setObject:self.manifest.version forKey:@"appVersion"];
+  }
+
+  return appInfo;
 }
 
 @end

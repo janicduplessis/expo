@@ -168,8 +168,8 @@ abstract class UpdatesDatabase : RoomDatabase() {
         // https://www.sqlite.org/lang_altertable.html#otheralter
         try {
           database.execSQL("PRAGMA foreign_keys=OFF")
-          database.beginTransaction()
           try {
+            database.beginTransaction()
             database.execSQL("ALTER TABLE `assets` ADD COLUMN `extra_request_headers` TEXT")
             database.setTransactionSuccessful()
           } finally {

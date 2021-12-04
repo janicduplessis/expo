@@ -97,7 +97,8 @@ abstract class AssetDao {
 
     if (
       (newEntity.extraRequestHeaders != null && existingEntity.extraRequestHeaders == null) ||
-      newEntity.extraRequestHeaders?.equals(existingEntity.extraRequestHeaders) == false) {
+      newEntity.extraRequestHeaders?.equals(existingEntity.extraRequestHeaders) == false
+    ) {
       existingEntity.extraRequestHeaders = newEntity.extraRequestHeaders
       shouldUpdate = true
     }

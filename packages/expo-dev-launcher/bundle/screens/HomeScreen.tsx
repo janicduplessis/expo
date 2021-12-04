@@ -35,7 +35,8 @@ export function HomeScreen({
   pollAmount = 5,
 }: HomeScreenProps) {
   const { data, pollAsync, isFetching } = useLocalPackagers();
-  const { appName, appIcon } = useAppInfo();
+  const appInfo = useAppInfo();
+  const { appName, appIcon } = appInfo;
 
   const initialPackagerData = React.useRef(data);
 

@@ -3,6 +3,7 @@ package expo.modules.devlauncher.modules
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
@@ -134,5 +135,30 @@ class DevLauncherInternalModule(reactContext: ReactApplicationContext?)
     } catch (_: ActivityNotFoundException) {
       false
     }
+  }
+
+
+  @ReactMethod
+  fun getAppInfo(promise: Promise) {
+    val map = Arguments.createMap()
+    val packageManager = reactApplicationContext.packageManager
+    val packageName = reactApplicationContext.packageName
+
+    val packageInfo =  packageManager.getPackageInfo(packageName, 0)
+    val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
+    val appName = packageManager.getApplicationLabel(applicationInfo)
+
+//    TODO - get these values
+//    val appIcon = packageManager.getApplicationIcon(applicationInfo)
+//    val runtimeVersion = applicationInfo.metaData.getString("expo.modules.updates.EXPO_RUNTIME_VERSION")
+//    val sdkVersion = applicationInfo.metaData.getString("expo.modules.updates.EXPO_UPDATES_SDK_VERSION")
+
+    map.putString("appVersion", packageInfo.versionName)
+    map.putString("appName", appName.toString())
+    map.putString("appIcon", "")
+    map.putString("EXUpdatesRuntimeVersion","")
+    map.putString("EXUpdatesSDKVersion", "")
+
+    promise.resolve(map)
   }
 }

@@ -15,6 +15,7 @@ import {
 import * as React from 'react';
 import { ScrollView, Switch } from 'react-native';
 
+import { useAppInfo } from '../hooks/useAppInfo';
 import { useDevMenuSettings } from '../hooks/useDevMenuSettings';
 
 export function SettingsScreen() {
@@ -26,6 +27,8 @@ export function SettingsScreen() {
     motionGestureEnabled,
     setMotionGestureEnabled,
   } = useDevMenuSettings();
+
+  const appInfo = useAppInfo();
 
   return (
     <ScrollView>
@@ -113,18 +116,32 @@ export function SettingsScreen() {
 
         <View bg="default" rounded="large">
           <Row px="medium" py="small" align="center">
-            <Text size="large">Version</Text>
+            <Text size="medium">Version</Text>
             <Spacer.Horizontal size="flex" />
-            <Text>2.18.6.1011344</Text>
+            <Text>{appInfo?.appVersion}</Text>
           </Row>
 
-          <Divider />
+          {Boolean(appInfo.EXUpdatesRuntimeVersion) && (
+            <>
+              <Divider />
+              <Row px="medium" py="small" align="center">
+                <Text size="medium">Runtime Version</Text>
+                <Spacer.Horizontal size="flex" />
+                <Text>{appInfo.EXUpdatesRuntimeVersion}</Text>
+              </Row>
+            </>
+          )}
 
-          <Row px="medium" py="small" align="center">
-            <Text size="large">Runtime Version</Text>
-            <Spacer.Horizontal size="flex" />
-            <Text>14</Text>
-          </Row>
+          {Boolean(appInfo.EXUpdatesSDKVersion) && (
+            <>
+              <Divider />
+              <Row px="medium" py="small" align="center">
+                <Text size="medium">SDK Version</Text>
+                <Spacer.Horizontal size="flex" />
+                <Text>{appInfo.EXUpdatesSDKVersion}</Text>
+              </Row>
+            </>
+          )}
 
           <Divider />
 

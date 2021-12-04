@@ -26,10 +26,12 @@ export function addDeepLinkListener(callback: (string) => void): EventSubscripti
 }
 
 export type AppInfo = {
-  appName: string;
-  appVersion: number | null;
-  appIcon: string | null;
-  hostUrl: string | null;
+  appName?: string;
+  appVersion?: string;
+  appIcon?: string;
+  hostUrl?: string;
+  EXUpdatesSDKVersion?: string;
+  EXUpdatesRuntimeVersion?: string;
 };
 
 export async function getAppInfoAsync(): Promise<AppInfo> {

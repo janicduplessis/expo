@@ -489,12 +489,27 @@ NSString *fakeLauncherBundleUrl = @"embedded://EXDevLauncher/dummy";
 
 -(NSDictionary *)getAppInfo
 {
+  
   NSMutableDictionary *appInfo = [NSMutableDictionary new];
-
+  
+  NSString *path = [[NSBundle mainBundle] pathForResource: @"Expo" ofType: @"plist"];
+  
+  if (path != nil) {
+    NSDictionary *expoConfig = [NSDictionary dictionaryWithContentsOfFile: path];
+    
+    if (expoConfig != nil) {
+      appInfo = [expoConfig mutableCopy];
+    }
+  }
+  
+  
+  NSString *appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+  NSString *appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+  NSString *versionBuildString = [NSString stringWithFormat:@"%@ (%@)", appVersionString, appBuildString];
+  
+  [appInfo setObject:versionBuildString forKey:@"appVersion"];
   [appInfo setObject:self.launcherBridge.bundleURL.absoluteString forKey:@"hostUrl"];
-  [appInfo setObject:[NSNull new] forKey:@"appIcon"];
-  [appInfo setObject:[NSNull new] forKey:@"appName"];
-  [appInfo setObject:[NSNull new] forKey:@"appVersion"];
+  
 
   NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleDisplayName"] ?: [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleExecutable"];
 
@@ -502,12 +517,8 @@ NSString *fakeLauncherBundleUrl = @"embedded://EXDevLauncher/dummy";
     [appInfo setObject:appName forKey:@"appName"];
   }
 
-  NSString *appVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
-
-  if (appVersion) {
-    [appInfo setObject:appVersion forKey:@"appVersion"];
-  }
-
+  [appInfo setObject:@"" forKey:@"appIcon"];
+  
   NSString *appIconName = [[[[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIcons"] objectForKey:@"CFBundlePrimaryIcon"] objectForKey:@"CFBundleIconFiles"]  lastObject];
     
   NSString *resourcePath = [[NSBundle mainBundle] resourcePath];
@@ -515,11 +526,6 @@ NSString *fakeLauncherBundleUrl = @"embedded://EXDevLauncher/dummy";
 
   if (appIconPath) {
     [appInfo setObject:[@"file://" stringByAppendingString:appIconPath] forKey:@"appIcon"];
-  }
-
-  if (self.manifest) {
-    [appInfo setObject:self.manifest.name forKey:@"appName"];
-    [appInfo setObject:self.manifest.version forKey:@"appVersion"];
   }
 
   return appInfo;

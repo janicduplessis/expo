@@ -37,6 +37,7 @@ const androidDrmSource: VideoSource = {
 };
 const videoLabels: string[] = ['Big Buck Bunny', 'Elephants Dream', 'For Bigger Blazes'];
 const videoSources: VideoSource[] = [
+  require('../../../assets/videos/ace.mp4'),
   bigBuckBunnySource,
   elephantsDreamSource,
   forBiggerBlazesSource,

@@ -1,8 +1,8 @@
 import { CircularProgress, LinearProgress } from '@expo/ui/components/Progress';
 import * as React from 'react';
+import { Platform } from 'react-native';
 
 import { Page, Section } from '../../components/Page';
-import { Platform } from 'react-native';
 
 export default function ProgressScreen() {
   const [progress, setProgress] = React.useState(0);

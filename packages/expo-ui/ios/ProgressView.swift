@@ -27,10 +27,10 @@ struct ProgressView: ExpoSwiftUI.View {
         .tint(props.color)
         .if(props.variant == .circular) {
           $0.progressViewStyle(.circular)
-        }.if(props.variant == .linear) {
+        }
+        .if(props.variant == .linear) {
           $0.progressViewStyle(.linear)
         }
-
     }
   }
 }

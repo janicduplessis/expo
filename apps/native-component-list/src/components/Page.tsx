@@ -1,7 +1,7 @@
 import { H4 } from '@expo/html-elements';
 import * as React from 'react';
 import { PropsWithChildren } from 'react';
-import { StyleSheet, View, ScrollView, StyleProp, ViewStyle } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 
 export function Page({ children }: PropsWithChildren) {
   return <View style={styles.page}>{children}</View>;

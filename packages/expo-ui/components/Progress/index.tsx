@@ -1,6 +1,15 @@
 import { requireNativeView } from 'expo';
 import { StyleProp, ViewStyle } from 'react-native';
 
+export type ProgressElementColors = {
+  /**
+   * Track color.
+   *
+   * @platform android
+   */
+  trackColor?: string;
+};
+
 export type ProgressProps = {
   /**
    * Custom styles for the progress component.
@@ -14,13 +23,11 @@ export type ProgressProps = {
    * Progress color.
    */
   color?: string;
-
   /**
-   * Track color.
-   *
+   * Colors for switch's core elements.
    * @platform android
    */
-  trackColor?: string;
+  elementColors?: ProgressElementColors;
 };
 
 type NativeProgressProps = ProgressProps & {

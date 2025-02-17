@@ -32,8 +32,8 @@ export default function ProgressScreen() {
       </Section>
       {Platform.OS === 'android' && (
         <Section title="Track color" gap={16}>
-          <CircularProgress trackColor="#cccccc" />
-          <LinearProgress trackColor="#cccccc" />
+          <CircularProgress elementColors={{ trackColor: '#cccccc' }} />
+          <LinearProgress elementColors={{ trackColor: '#cccccc' }} />
         </Section>
       )}
     </Page>

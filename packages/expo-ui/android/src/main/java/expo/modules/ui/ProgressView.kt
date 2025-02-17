@@ -20,11 +20,16 @@ enum class ProgressVariant(val value: String) : Enumerable {
   LINEAR("linear"),
 }
 
+class ProgressColors : Record {
+  @Field
+  val trackColor: Color? = null
+}
+
 data class ProgressProps(
   val variant: MutableState<ProgressVariant> = mutableStateOf(ProgressVariant.CIRCULAR),
   val progress: MutableState<Float?> = mutableStateOf(null),
   val color: MutableState<Color?> = mutableStateOf(null),
-  val trackColor: MutableState<Color?> = mutableStateOf(null),
+  val elementColors: MutableState<ProgressColors> = mutableStateOf(ProgressColors())
 ) : ComposeProps
 
 class ProgressView(context: Context, appContext: AppContext) : ExpoComposeView<ProgressProps>(context, appContext) {
@@ -35,22 +40,22 @@ class ProgressView(context: Context, appContext: AppContext) : ExpoComposeView<P
       val (variant) = props.variant
       val (progress) = props.progress
       val (color) = props.color
-      val (trackColor) = props.trackColor
+      val (colors) = props.elementColors
       DynamicTheme {
         when (variant) {
           ProgressVariant.LINEAR ->
             AutoSizingComposable(shadowNodeProxy, axis = EnumSet.of(Direction.VERTICAL)) {
               val composeColor = color.composeOrNull ?: ProgressIndicatorDefaults.linearColor
-              val composeTrackColor = trackColor.composeOrNull ?: ProgressIndicatorDefaults.linearTrackColor
+              val trackColor = colors.trackColor.composeOrNull ?: ProgressIndicatorDefaults.linearTrackColor
               if (progress != null) {
                 LinearProgressIndicator(
                   progress = { progress },
                   color = composeColor,
-                  trackColor = composeTrackColor,
+                  trackColor = trackColor,
                   drawStopIndicator = {},
                 )
               } else {
-                LinearProgressIndicator(color = composeColor, trackColor = composeTrackColor)
+                LinearProgressIndicator(color = composeColor, trackColor = trackColor)
               }
             }
           ProgressVariant.CIRCULAR ->
@@ -60,12 +65,12 @@ class ProgressView(context: Context, appContext: AppContext) : ExpoComposeView<P
                 CircularProgressIndicator(
                   progress = { progress },
                   color = composeColor,
-                  trackColor = trackColor.composeOrNull ?: ProgressIndicatorDefaults.circularDeterminateTrackColor,
+                  trackColor = colors.trackColor.composeOrNull ?: ProgressIndicatorDefaults.circularDeterminateTrackColor,
                 )
               } else {
                 CircularProgressIndicator(
                   color = composeColor,
-                  trackColor = trackColor.composeOrNull ?: ProgressIndicatorDefaults.circularIndeterminateTrackColor,
+                  trackColor = colors.trackColor.composeOrNull ?: ProgressIndicatorDefaults.circularIndeterminateTrackColor,
                 )
               }
             }
